@@ -1,0 +1,9 @@
+Package: com.nightwind.searchdots
+Name: SearchDots
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Search Pill Ported from iOS 16
+Maintainer: Nightwind
+Author: Nightwind
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader

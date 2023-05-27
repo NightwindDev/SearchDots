@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>SearchDotsBannerCell</string>
+
+			<key>tweakTitle</key>
+			<string>SearchDots</string>
+
+			<key>height</key>
+			<real>225</real>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Contact</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>SearchDotsContactCell</string>
+
+			<key>titleLabel</key>
+			<string>Nightwind</string>
+			<key>bottomLabel</key>
+			<string>@NightwindDev</string>
+			<key>image</key>
+			<string>Nightwind.jpg</string>
+			<key>url</key>
+			<string>https://twitter.com/NightwindDev</string>
+			<key>action</key>
+			<string>open:</string>
+
+			<key>height</key>
+			<real>70</real>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Configure Tweak</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.nightwind.searchdotsprefs</string>
+			<key>key</key>
+			<string>tweakEnabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Action</string>
+			<key>footerText</key>
+			<string>Spotlight Search: Once pressed, Spotlight Search will be invoked.
+
+App Library Search: Once pressed, the App Library Search will be invoked.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.nightwind.searchdotsprefs</string>
+			<key>key</key>
+			<string>action</string>
+			<key>validTitles</key>
+			<array>
+				<string>Spotlight Search</string>
+				<string>App Library Search</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Y Offset</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>key</key>
+			<string>yOffset</string>
+			<key>default</key>
+			<real>0</real>
+			<key>defaults</key>
+			<string>com.nightwind.searchdotsprefs</string>
+			<key>min</key>
+			<integer>-100</integer>
+			<key>max</key>
+			<integer>100</integer>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<string>true</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>GitHub</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>cellClass</key>
+			<string>SearchDotsContactCell</string>
+
+			<key>titleLabel</key>
+			<string>Source Code</string>
+			<key>bottomLabel</key>
+			<string>GitHub</string>
+			<key>image</key>
+			<string>GitHub.png</string>
+			<key>url</key>
+			<string>https://github.com/NightwindDev/SearchDots</string>
+			<key>action</key>
+			<string>open:</string>
+
+			<key>height</key>
+			<real>70</real>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerAlignment</key>
+			<integer>1</integer>
+			<key>footerText</key>
+			<string>© Nightwind 2023</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>SearchDots</string>
+</dict>
+</plist>
