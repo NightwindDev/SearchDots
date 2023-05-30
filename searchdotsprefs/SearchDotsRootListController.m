@@ -22,6 +22,7 @@
 	[NSDistributedNotificationCenter.defaultCenter postNotificationName:@"tweakEnableStateChanged" object:nil];
 	[NSDistributedNotificationCenter.defaultCenter postNotificationName:@"actionStateChanged" object:nil];
 	[NSDistributedNotificationCenter.defaultCenter postNotificationName:@"offsetStateChanged" object:nil];
+	[NSDistributedNotificationCenter.defaultCenter postNotificationName:@"hideBackgroundStateChanged" object:nil];
 
 	[super setPreferenceValue:value specifier:specifier];
 }

@@ -118,6 +118,26 @@ App Library Search: Once pressed, the App Library Search will be invoked.</strin
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>Hide Background</string>
+			<key>footerText</key>
+			<string>If enabled, the background of the pill will be hidden.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.nightwind.searchdotsprefs</string>
+			<key>key</key>
+			<string>hideBackground</string>
+			<key>label</key>
+			<string>Hide Background</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>GitHub</string>
 		</dict>
 		<dict>

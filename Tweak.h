@@ -78,7 +78,7 @@ typedef struct SBRootFolderViewMetrics {
 BOOL tweakEnabled;
 NSInteger action;
 CGFloat offset;
-BOOL editing;
+BOOL hideBackground;
 
 CGFloat origYCoord;
 
