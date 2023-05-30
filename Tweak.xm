@@ -9,6 +9,7 @@ static void loadWithoutRespring() {
 	action = [prefs objectForKey:@"action"] ? [prefs integerForKey:@"action"] : 0;
 	offset = [prefs objectForKey:@"yOffset"] ? [prefs floatForKey:@"yOffset"] : 0;
 	hideBackground = [prefs objectForKey:@"hideBackground"] ? [prefs boolForKey:@"hideBackground"] : false;
+	onePageSupport = [prefs objectForKey:@"onePageSupport"] ? [prefs boolForKey:@"onePageSupport"] : false;
 }
 
 NSString *localizedSearchText(NSInteger action) {
@@ -183,6 +184,13 @@ NSString *localizedSearchText(NSInteger action) {
 	} else {
 		return %orig;
 	}
+}
+
+- (void)setHidesForSinglePage:(BOOL)hides {
+	if (tweakEnabled) {
+		%orig(onePageSupport ? false : true);
+		[self setHidden:onePageSupport ? false : true];
+	} else %orig;
 }
 
 %new

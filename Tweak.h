@@ -79,6 +79,7 @@ BOOL tweakEnabled;
 NSInteger action;
 CGFloat offset;
 BOOL hideBackground;
+BOOL onePageSupport;
 
 CGFloat origYCoord;
 

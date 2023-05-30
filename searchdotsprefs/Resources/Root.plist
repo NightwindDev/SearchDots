@@ -138,6 +138,36 @@ App Library Search: Once pressed, the App Library Search will be invoked.</strin
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>One Page Support</string>
+			<key>footerText</key>
+			<string>This option REQUIRES a respring to apply. It will force the pill to show even if there is only one page on the homescreen.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.nightwind.searchdotsprefs</string>
+			<key>key</key>
+			<string>onePageSupport</string>
+			<key>label</key>
+			<string>One Page Support</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>id</key>
+			<string>respringCell</string>
+			<key>action</key>
+			<string>respring</string>
+			<key>label</key>
+			<string>Respring</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>GitHub</string>
 		</dict>
 		<dict>
