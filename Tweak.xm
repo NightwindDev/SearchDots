@@ -50,15 +50,6 @@ NSString *localizedSearchText(NSInteger action) {
     return [dict valueForKey:returnKey];
 }
 
-
-		// App资源库 - CN
-		// App資料庫 - HK
-		// App資料庫 - TW
-
-		// 搜索 - CN
-		// 搜尋 - HK
-		// 搜尋 - TW
-
 // TAKEN FROM ATRIA
 %hook SBRootFolderView
 
@@ -189,7 +180,6 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)setHidesForSinglePage:(BOOL)hides {
 	if (tweakEnabled) {
 		%orig(onePageSupport ? false : true);
-		[self setHidden:onePageSupport ? false : true];
 	} else %orig;
 }
 
