@@ -45,16 +45,8 @@
     extern char **environ;
     pid_t pid;
 
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-	if ([fileManager fileExistsAtPath:@"/var/Liy/.procursus_strapped"] && ![fileManager fileExistsAtPath:@"/var/jb/usr/local/bin/Xinamine"]) {
-		const char *args[] = {"killall", "backboardd", NULL};
-		posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char *const *)args, environ);
-		return;
-	}
-
-    const char *args[] = {"sbreload", NULL};
-    posix_spawn(&pid, ROOT_PATH("/usr/bin/sbreload"), NULL, NULL, (char *const *)args, environ);
+	const char *args[] = {"killall", "backboardd", NULL};
+	posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char *const *)args, environ);
 }
 
 @end

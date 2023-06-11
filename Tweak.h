@@ -30,6 +30,7 @@
 - (SBLibraryViewController *)libraryViewController;
 - (void)searchBarDidFocus;
 - (void)dismissSearchView;
+- (void)presentLibraryOverlayForIconManager:(id)iconManager;
 @end
 
 @interface SBIconListPageControl : UIView

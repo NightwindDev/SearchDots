@@ -134,10 +134,13 @@ NSString *localizedSearchText(NSInteger action) {
         }
 
         if (action == appLibrary) {
-            SBLibraryViewController *appLibraryViewController = [iconController libraryViewController];
-
-            [iconController presentLibraryAnimated:true completion:nil];
-            [[appLibraryViewController containerViewController] setActive:true];
+			if (@available(iOS 15, *)) {
+				SBLibraryViewController *appLibraryViewController = [iconController libraryViewController];
+				[iconController presentLibraryAnimated:true completion:nil];
+				[[appLibraryViewController containerViewController] setActive:true];
+			} else {
+				[iconController presentLibraryOverlayForIconManager:nil];
+			}
         }
     }
 }
@@ -192,7 +195,12 @@ NSString *localizedSearchText(NSInteger action) {
 	self.blurView.captureOnly = hideBackground ? true : false;
 
 	if (tweakEnabled == true && !pillWasAdded) {
-		self.blurView = [%c(MTMaterialView) materialViewWithRecipe:19 options:2];
+		if (@available(iOS 15, *)) {
+			self.blurView = [%c(MTMaterialView) materialViewWithRecipe:19 options:2];
+		} else {
+			self.blurView = [%c(MTMaterialView) materialViewWithRecipe:19 configuration:1];
+		}
+
 		self.blurView.layer.cornerRadius = 17.5;
 		self.blurView.layer.continuousCorners = true;
 		self.blurView.translatesAutoresizingMaskIntoConstraints = false;
