@@ -107,9 +107,11 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)layoutSubviews {
 	%orig;
 
-	[self newLayout];
+	if ([[self _viewControllerForAncestor] isKindOfClass:%c(SBRootFolderController)]) {
+		[self newLayout];
 
-	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newLayout) name:@"tweakEnableStateChanged" object:nil];
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newLayout) name:@"tweakEnableStateChanged" object:nil];
+	}
 }
 
 %end
@@ -156,9 +158,11 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)didMoveToWindow {
     %orig;
 
-	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newActsAsButton) name:@"tweakEnableStateChanged" object:nil];
-    [NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newTapGesture:) name:@"tweakEnableStateChanged" object:nil];
-    [NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newTapGesture:) name:@"actionStateChanged" object:nil];
+	if ([[self _viewControllerForAncestor] isKindOfClass:%c(SBRootFolderController)]) {
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newActsAsButton) name:@"tweakEnableStateChanged" object:nil];
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newTapGesture:) name:@"tweakEnableStateChanged" object:nil];
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newTapGesture:) name:@"actionStateChanged" object:nil];
+	}
 }
 
 %new
@@ -173,16 +177,20 @@ NSString *localizedSearchText(NSInteger action) {
 }
 
 - (BOOL)actsAsButton {
-	if ([self newActsAsButton]) {
-		return true;
-	} else {
-		return %orig;
-	}
+	if ([[self _viewControllerForAncestor] isKindOfClass:%c(SBRootFolderController)]) {
+		if ([self newActsAsButton]) {
+			return true;
+		} else {
+			return %orig;
+		}
+	} else return %orig;
 }
 
 - (void)setHidesForSinglePage:(BOOL)hides {
-	if (tweakEnabled) {
-		%orig(onePageSupport ? false : true);
+	if ([[self _viewControllerForAncestor] isKindOfClass:%c(SBRootFolderController)]) {
+		if (tweakEnabled) {
+			%orig(onePageSupport ? false : true);
+		} else %orig;
 	} else %orig;
 }
 
@@ -204,10 +212,12 @@ NSString *localizedSearchText(NSInteger action) {
 		self.blurView.layer.cornerRadius = 17.5;
 		self.blurView.layer.continuousCorners = true;
 		self.blurView.translatesAutoresizingMaskIntoConstraints = false;
+		self.blurView.captureOnly = hideBackground ? true : false;
 		[self addSubview:self.blurView];
 
 		self.searchIcon = [UIImageView new];
 		self.searchIcon.image = [UIImage systemImageNamed:@"magnifyingglass"];
+		self.searchIcon.contentMode = UIViewContentModeScaleAspectFit;
 		self.searchIcon.tintColor = UIColor.whiteColor;
 		self.searchIcon.translatesAutoresizingMaskIntoConstraints = false;
 		self.searchIcon.alpha = 0.8;
@@ -256,7 +266,6 @@ NSString *localizedSearchText(NSInteger action) {
 		[self.blurView.heightAnchor constraintEqualToConstant:35].active = YES;
 
 		[self.searchIcon.widthAnchor constraintEqualToConstant:13].active = YES;
-		[self.searchIcon.heightAnchor constraintEqualToConstant:13].active = YES;
 		[self.searchIcon.centerYAnchor constraintEqualToAnchor:self.blurView.centerYAnchor].active = YES;
 		[self.searchIcon.leadingAnchor constraintEqualToAnchor:self.blurView.leadingAnchor constant:13].active = YES;
 
@@ -270,12 +279,16 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)layoutSubviews {
     %orig;
 
-	[self setCurrentPageIndicatorTintColor:[UIColor labelColor]];
+	if ([[self _viewControllerForAncestor] isKindOfClass:%c(SBRootFolderController)]) {
 
-	[self newLayout];
+		[self setCurrentPageIndicatorTintColor:[UIColor labelColor]];
 
-	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newActsAsButton) name:@"tweakEnableStateChanged" object:nil];
-	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newLayout) name:@"tweakEnableStateChanged" object:nil];
+		[self newLayout];
+
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newActsAsButton) name:@"tweakEnableStateChanged" object:nil];
+		[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(newLayout) name:@"tweakEnableStateChanged" object:nil];
+
+	}
 }
 
 
