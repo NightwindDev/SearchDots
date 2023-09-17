@@ -4,6 +4,28 @@
 #define spotlight 0
 #define appLibrary 1
 
+@interface SBIconListPageControl : UIView
+@property (nonatomic, strong) UIImageView *searchIcon;
+@property (nonatomic, strong) UILabel *searchLabel;
+@property (nonatomic, strong) MTMaterialView *blurView;
+- (void)newTapGesture:(id)gestureRecognizer;
+- (BOOL)newActsAsButton;
+- (void)addSearchPill;
+- (void)newLayout;
+- (void)setActsAsButton:(BOOL)actsAsButton;
+- (void)setCurrentPageIndicatorTintColor:(UIColor *)tintColor;
+@end
+
+@interface SBHIconManager : NSObject
+@end
+
+@interface SBWindowScene : UIWindowScene
+@end
+
+@interface SBFolderScrollAccessoryView : UIView
+@property (nonatomic, strong) SBIconListPageControl *pageControl;
+@end
+
 @interface UIView (SearchDots)
 - (UIViewController *)_viewControllerForAncestor;
 @end
@@ -25,25 +47,16 @@
 @end
 
 @interface SBIconController : UIViewController
+@property (nonatomic, strong, readwrite) SBLibraryViewController *overlayLibraryViewController;
+- (SBHIconManager *)iconManager;
+- (SBWindowScene *)mainDisplayWindowScene;
 + (SBIconController *)sharedInstance;
-- (BOOL)presentLibraryAnimated:(BOOL)animated completion:(id)completion;
 - (SBLibraryViewController *)libraryViewController;
 - (void)searchBarDidFocus;
 - (void)dismissSearchView;
-- (void)presentLibraryOverlayForIconManager:(id)iconManager;
-@end
-
-@interface SBIconListPageControl : UIView
-@property (nonatomic, strong) UIImageView *searchIcon;
-@property (nonatomic, strong) UILabel *searchLabel;
-@property (nonatomic, strong) MTMaterialView *blurView;
-- (void)newTapGesture:(id)gestureRecognizer;
-- (BOOL)newActsAsButton;
-- (void)addSearchPill;
-- (void)newLayout;
-- (void)setActsAsButton:(BOOL)actsAsButton;
-- (void)setCurrentPageIndicatorTintColor:(UIColor *)tintColor;
-// - (void)notificationReceived:(NSNotification *)notification;
+- (void)presentLibraryForIconManager:(SBHIconManager *)iconManager windowScene:(SBWindowScene *)windowScene animated:(BOOL)isAnimated; // iOS 16
+- (BOOL)presentLibraryAnimated:(BOOL)animated completion:(id)completion; // iOS 15
+- (void)presentLibraryOverlayForIconManager:(SBHIconManager *)iconManager; // iOS 14
 @end
 
 @interface _UIPageControlContentView : UIView
@@ -72,6 +85,7 @@ typedef struct SBRootFolderViewMetrics {
 } SBRootFolderViewMetrics;
 
 @interface SBRootFolderView : UIView
+@property (nonatomic, strong) SBFolderScrollAccessoryView *scrollAccessoryView;
 @property (nonatomic, strong) SBIconListPageControl *pageControl;
 - (void)setNewFrame;
 @end

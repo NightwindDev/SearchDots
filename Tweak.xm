@@ -12,43 +12,87 @@ static void loadWithoutRespring() {
 	onePageSupport = [prefs objectForKey:@"onePageSupport"] ? [prefs boolForKey:@"onePageSupport"] : false;
 }
 
-NSString *localizedSearchText(NSInteger action) {
-    NSString *languageCode = NSLocale.currentLocale.languageCode;
-    NSString *returnKey;
-    NSString *filePath;
+NSString *localizedTextForiOS14And15(NSInteger action, NSString *languageCode) {
+	NSString *filePath = nil;
+	NSDictionary *dict = nil;
+	NSString *localizedString = nil;
 
-    NSDictionary *chineseLanguageMap = @{
+	if (action == spotlight) {
+		filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/UIKitCore.framework/%@.lproj/Localizable.strings", languageCode];
+		dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
+		localizedString = [dict objectForKey:@"Search"];
+	} else if (action == appLibrary) {
+		filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/SpringBoardHome.framework/%@.lproj/SpringBoardHome.strings", languageCode];
+		dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
+		localizedString = [dict objectForKey:@"APP_LIBRARY_SEARCH_PLACEHOLDER"];
+	}
+
+	return localizedString;
+}
+
+NSString *localizedTextForiOS16(NSInteger action, NSString *languageCode) {
+	NSString *localizedString = nil;
+
+	if (action == spotlight) {
+		NSBundle *frameworkBundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/SpotlightUIInternal.framework/"];
+		localizedString = NSLocalizedStringWithDefaultValue(@"SEARCH_BAR_PLACEHOLDER", nil, frameworkBundle, @"Search", @"");
+	} else if (action == appLibrary) {
+		NSString *filePath = @"/System/Library/PrivateFrameworks/SpringBoardHome.framework/SpringBoardHome.loctable";
+		NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
+		NSDictionary *localeDict = [dict objectForKey:languageCode];
+		localizedString = [localeDict objectForKey:@"APP_LIBRARY_SEARCH_PLACEHOLDER"];
+	}
+
+	return localizedString;
+}
+
+NSString *localizedSearchText(NSInteger action) {
+    NSString *const languageCode = NSLocale.currentLocale.languageCode;
+    NSDictionary *const chineseLanguageMap = @{
         @"CN": @"zh_CN",
         @"HK": @"zh_HK",
         @"TW": @"zh_TW"
     };
 
-	if (action == appLibrary) {
-		returnKey = @"APP_LIBRARY_SEARCH_PLACEHOLDER";
-	} else if (action == spotlight) {
-		returnKey = @"Search";
-	}
-
 	if ([languageCode hasPrefix:@"zh"]) {
 		NSString *regionCode = NSLocale.currentLocale.countryCode;
 		NSString *chineseLanguageCode = chineseLanguageMap[regionCode] ? chineseLanguageMap[regionCode] : @"zh_CN";
 
-		if (action == appLibrary) {
-			filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/SpringBoardHome.framework/%@.lproj/SpringBoardHome.strings", chineseLanguageCode];
-		} else if (action == spotlight) {
-			filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/UIKitCore.framework/%@.lproj/Localizable.strings", chineseLanguageCode];
+		if (@available(iOS 16, *)) {
+			return localizedTextForiOS16(action, chineseLanguageCode);
+		} else {
+			return localizedTextForiOS14And15(action, chineseLanguageCode);
 		}
 	} else {
-		if (action == appLibrary) {
-			filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/SpringBoardHome.framework/%@.lproj/SpringBoardHome.strings", languageCode];
-		} else if (action == spotlight) {
-			filePath = [NSString stringWithFormat:@"/System/Library/PrivateFrameworks/UIKitCore.framework/%@.lproj/Localizable.strings", languageCode];
+		if (@available(iOS 16, *)) {
+			return localizedTextForiOS16(action, languageCode);
+		} else {
+			return localizedTextForiOS14And15(action, languageCode);
 		}
 	}
-
-    NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfFile:filePath];
-    return [dict valueForKey:returnKey];
 }
+
+// for iOS 16
+// https://stackoverflow.com/questions/11770743/capturing-touches-on-a-subview-outside-the-frame-of-its-superview-using-hittest
+%hook SBFolderScrollAccessoryView
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+
+    if (self.clipsToBounds || self.hidden || self.alpha == 0) return nil;
+
+    for (UIView *subview in self.subviews.reverseObjectEnumerator) {
+        CGPoint subPoint = [subview convertPoint:point fromView:self];
+        UIView *result = [subview hitTest:subPoint withEvent:event];
+
+        if (result) {
+            return result;
+        }
+    }
+
+    return nil;
+}
+
+%end
 
 // TAKEN FROM ATRIA
 %hook SBRootFolderView
@@ -57,7 +101,11 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)setNewFrame {
 	loadWithoutRespring();
 
-	UIView *view = self.pageControl;
+	UIView *view = nil;
+
+	if (@available(iOS 16, *)) view = self.scrollAccessoryView;
+	else view = self.pageControl;
+
 	CGRect newFrame = view.frame;
 
 	if (tweakEnabled) {
@@ -72,9 +120,16 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)layoutPageControlWithMetrics:(const struct SBRootFolderViewMetrics *)metrics {
     %orig;
 
-	origYCoord = self.pageControl.frame.origin.y;
+	// if (tweakEnabled) {
+		UIView *view = nil;
 
-	[self setNewFrame];
+		if (@available(iOS 16, *)) view = self.scrollAccessoryView;
+		else view = self.pageControl;
+
+		origYCoord = view.frame.origin.y;
+
+		[self setNewFrame];
+	// }
 
 	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(setNewFrame) name:@"tweakEnableStateChanged" object:nil];
 }
@@ -82,7 +137,9 @@ NSString *localizedSearchText(NSInteger action) {
 - (void)_updateDockOffscreenFractionWithMetrics:(const struct SBRootFolderViewMetrics *)metrics {
 	%orig;
 
-	[self setNewFrame];
+	// if (tweakEnabled) {
+		[self setNewFrame];
+	// }
 
 	[NSDistributedNotificationCenter.defaultCenter addObserver:self selector:@selector(setNewFrame) name:@"tweakEnableStateChanged" object:nil];
 }
@@ -136,7 +193,11 @@ NSString *localizedSearchText(NSInteger action) {
         }
 
         if (action == appLibrary) {
-			if (@available(iOS 15, *)) {
+			if (@available(iOS 16, *)) {
+				SBLibraryViewController *appLibraryViewController = [iconController overlayLibraryViewController];
+				[iconController presentLibraryForIconManager:[iconController iconManager] windowScene:[iconController mainDisplayWindowScene] animated:true];
+				[[appLibraryViewController containerViewController] setActive:true];
+			} else if (@available(iOS 15, *)) {
 				SBLibraryViewController *appLibraryViewController = [iconController libraryViewController];
 				[iconController presentLibraryAnimated:true completion:nil];
 				[[appLibraryViewController containerViewController] setActive:true];
@@ -273,6 +334,16 @@ NSString *localizedSearchText(NSInteger action) {
 		[self.searchLabel.leadingAnchor constraintEqualToAnchor:self.searchIcon.trailingAnchor constant:4].active = YES;
 
 		[self.blurView.widthAnchor constraintEqualToAnchor:self.searchLabel.widthAnchor constant:45].active = YES;
+
+		[self.blurView layoutIfNeeded];
+
+		if (@available(iOS 16, *)) {
+			self.translatesAutoresizingMaskIntoConstraints = false;
+
+			[self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor].active = true;
+			[self.widthAnchor constraintEqualToAnchor:self.blurView.widthAnchor].active = true;
+			[self.heightAnchor constraintEqualToAnchor:self.blurView.heightAnchor].active = true;
+		}
 	}
 }
 
